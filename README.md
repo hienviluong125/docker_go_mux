@@ -12,8 +12,15 @@ PORT=3000
 
 2. Create a database with name is `docker_go_mux` in postgres
 
-3. Run cmd `go run main.go` to start server
+3. Run cmd `go run main.go` and visit `http://localhost:3000/api/posts`
 
 ### Setup with docker
+1. Change `docker-compose.yml` with following:
+```
+dockerfile: ./docker/app/Dockerfile.prod
+-> dockerfile: ./docker/app/Dockerfile.dev
 
-1. Run cmd `docker-compose up`, server run at port `:8080`
+command: sh /scripts/prod.sh
+-> command: sh /scripts/dev.sh
+```
+2. Run cmd `docker-compose up` and visit `http://localhost:80/api/posts`
