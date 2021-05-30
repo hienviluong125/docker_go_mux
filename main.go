@@ -20,10 +20,15 @@ func loggingMiddleware(next http.Handler) http.Handler {
 }
 
 func main() {
-	err := godotenv.Load(".env")
+	if goEnv := os.Getenv("GO_ENV"); goEnv != "production" {
+		log.Println("Starting go server in development mode")
+		err := godotenv.Load(".env")
 
-	if err != nil {
-		panic("Env vars error")
+		if err != nil {
+			panic("Env vars error. Please ensure .env file is created")
+		}
+	} else if goEnv == "production" {
+		log.Println("Starting go server in production mode")
 	}
 
 	database.Connect()
