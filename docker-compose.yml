@@ -11,9 +11,11 @@ services:
       - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
     restart: always
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile.dev
     volumes:
-      - .:/app
+      - app:/app
     environment:
       DB_HOST: db
       DB_PORT: 5432
@@ -23,10 +25,23 @@ services:
       PORT: 3000
       GO_ENV: production
     ports:
-      - "8080:3000"
+      - "3000:3000"
     depends_on:
       - db
-    command: sh /scripts/command.sh
+    command: sh /scripts/dev.sh
     restart: always
+  nginx:
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
+      args:
+        - HOST=localhost
+    restart: always
+    depends_on:
+      - web
+    ports:
+      - 80:80
+      - 443:443
 volumes:
+  app:
   db_data:
