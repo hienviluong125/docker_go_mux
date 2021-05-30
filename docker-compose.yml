@@ -1,0 +1,31 @@
+# docker-compose.yml
+version: "3.0"
+services:
+  db:
+    image: postgres:9.6
+    container_name: postgres9
+    environment:
+      POSTGRES_PASSWORD: password
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: always
+  web:
+    build: .
+    volumes:
+      - .:/app
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASS: password
+      DB_NAME: docker_go_mux
+      PORT: 3000
+    ports:
+      - "8080:3000"
+    depends_on:
+      - db
+    command: sh /scripts/command.sh
+    restart: always
+volumes:
+  db_data:
